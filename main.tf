@@ -25,13 +25,13 @@ locals {
     region = data.aws_region.current.name
     bucket = join("", aws_s3_bucket.default.*.id)
 
-    dynamodb_table = element(
+    dynamodb_table = local.dynamodb_enabled ? element(
       coalescelist(
         aws_dynamodb_table.with_server_side_encryption.*.name,
         aws_dynamodb_table.without_server_side_encryption.*.name
       ),
       0
-    )
+    ) : ""
 
     encrypt              = var.enable_server_side_encryption ? "true" : "false"
     role_arn             = var.role_arn
